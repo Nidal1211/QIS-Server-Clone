@@ -1,0 +1,7 @@
+CREATE TABLE Studiengang (
+    id VARCHAR(100) PRIMARY KEY NOT NULL,
+    title VARCHAR(30) NOT NULL,
+    code VARCHAR(30) UNIQUE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+    );

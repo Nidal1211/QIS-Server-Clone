@@ -1,0 +1,20 @@
+CREATE TABLE Pruefungen (
+    id VARCHAR(100) PRIMARY KEY NOT NULL,
+    parentId VARCHAR(100) ,
+    title VARCHAR(30) NOT NULL,
+    datum  DATE,
+    beginn TIME,
+    ende TIME,
+    pruefer VARCHAR(100),
+    semester VARCHAR(20) NOT NULL,
+    pruefungensnr VARCHAR(500) NOT NULL,
+    studiengangId  VARCHAR(20) NOT NULL,
+    raum  VARCHAR(20),
+    ruecktrittbis  DATE,
+    credit_point  int,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME,
+    FOREIGN KEY (parentId) REFERENCES Pruefungen(id) ON DELETE CASCADE,
+    FOREIGN KEY (studiengangId) REFERENCES Studiengang(id) ON DELETE CASCADE,
+    FOREIGN KEY (pruefer) REFERENCES Professor(id) ON DELETE SET NULL
+    );
