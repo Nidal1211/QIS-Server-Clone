@@ -7,6 +7,7 @@ import {
   Modal,
   TextField,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import {
@@ -37,12 +38,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
+import ExamTree from "../../../components/ExamTree";
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: "90vw",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -61,6 +63,8 @@ const AddCategoryModal = ({
 }) => {
   const alert = useAlert();
   const theme = useTheme();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+
   const colors = tokens(theme.palette.mode);
   const dispatch = useDispatch();
   const { loading, error, isCreated, message, success } = useSelector(
@@ -92,7 +96,7 @@ const AddCategoryModal = ({
 
   const [checked, setChecked] = useState([]);
   const [expanded, setExpanded] = useState([]);
-  const [categoryData, setCategoryData] = useState({
+  const [professorData, setProfessorData] = useState({
     parentId: null,
     title: "",
     datum: "",
@@ -119,7 +123,8 @@ const AddCategoryModal = ({
     raum,
     ruecktrittbis,
     credit_point,
-  } = categoryData;
+  } = professorData;
+
   const renderExamsList = useCallback((exams) => {
     let myExams = [];
     if (!Array.isArray(exams)) return null;
@@ -133,17 +138,22 @@ const AddCategoryModal = ({
     }
     return myExams;
   }, []);
+
   const handleInput = (e) => {
-    setCategoryData({ ...categoryData, [e.target.name]: e.target.value });
+    setProfessorData({ ...professorData, [e.target.name]: e.target.value });
   };
+
   const handelSubmit = (e) => {
     if (e) e.preventDefault();
     const myForrm = new FormData();
 
     myForrm.set("title", title);
-    myForrm.set("studiengangId", studiengang[0]?.value);
-    myForrm.set("pruefer", professor[0]?.value);
     myForrm.set("pruefungensnr", pruefungensnr);
+    myForrm.set("studiengangId", studiengang[0]?.value);
+    if (professor.length > 0) {
+      myForrm.set("pruefer", professor[0]?.value);
+    }
+
     if (datum) {
       myForrm.set("datum", datum);
     }
@@ -175,7 +185,7 @@ const AddCategoryModal = ({
 
     setChecked([]);
     setCatParentid(null);
-    // setCategoryData({
+    // setProfessorData({
     //   parentId: null,
     //   title: "",
     //   datum: "",
@@ -199,7 +209,7 @@ const AddCategoryModal = ({
   useEffect(() => {
     if (error) alert.error(error);
     if (catParentid) {
-      setCategoryData({ ...categoryData, parentId: catParentid });
+      setProfessorData({ ...professorData, parentId: catParentid });
     }
     dispatch({ type: "clearError" });
   }, [
@@ -211,14 +221,14 @@ const AddCategoryModal = ({
     alert,
     dispatch,
     catParentid,
-    categoryData,
-    setCategoryData,
+    professorData,
+    setProfessorData,
   ]);
 
   const handleCancel = (e) => {
     setChecked([]);
     setCatParentid(null);
-    // setCategoryData({
+    // setProfessorData({
     //   parentId: null,
     //   title: "",
     //   datum: "",
@@ -241,7 +251,7 @@ const AddCategoryModal = ({
   };
   return (
     <>
-      <Modal open={open} style={{}}>
+      <Modal open={open}>
         <Box sx={style}>
           <Header title="ADD EXAM" subtitle="create a new exam" />
 
@@ -261,12 +271,11 @@ const AddCategoryModal = ({
               <form onSubmit={handelSubmit} className="login_form">
                 <Box
                   display="grid"
-                  gridColumn="auto"
                   gap="30px"
                   gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                   sx={{
                     "& > div": {
-                      gridColumn: "span 4",
+                      gridColumn: isNonMobile ? undefined : "span 4",
                     },
                   }}
                 >
@@ -299,7 +308,7 @@ const AddCategoryModal = ({
                   <TextField
                     fullWidth
                     variant="filled"
-                    type="text"
+                    type="number"
                     label="pruefungensnr"
                     value={pruefungensnr}
                     onBlur={handleBlur}
@@ -363,6 +372,55 @@ const AddCategoryModal = ({
                       labelledBy="Select"
                     />
                   </Box>
+                  {catParentid ? null : (
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography
+                          color={colors.greenAccent[500]}
+                          variant="h5"
+                        >
+                          choose Parent exam
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <CheckboxTree
+                          nodes={renderExamsList(examList)}
+                          noCascade
+                          checked={checked}
+                          expanded={expanded}
+                          onClick={(e) => {
+                            setProfessorData({
+                              ...professorData,
+                              parentId: e.value,
+                            });
+                            if (checked.length < 1) {
+                              checked.push(e.value);
+                            }
+                          }}
+                          onCheck={(checked) => {
+                            if (checked.length > 1) {
+                              alert.error("you can pick only one category");
+                              return;
+                            }
+                            setChecked(checked);
+
+                            setProfessorData({
+                              ...professorData,
+                              parentId: checked[0],
+                            });
+                          }}
+                          onExpand={(expanded) => setExpanded(expanded)}
+                          icons={{
+                            check: <IoIosCheckbox style={{}} />,
+                            uncheck: <IoIosCheckboxOutline style={{}} />,
+                            halfCheck: <IoIosCheckboxOutline style={{}} />,
+                            expandClose: <IoIosArrowForward style={{}} />,
+                            expandOpen: <IoIosArrowDown />,
+                          }}
+                        />
+                      </AccordionDetails>
+                    </Accordion>
+                  )}
                   <Box
                     sx={{ gridColumn: "span 1" }}
                     style={{ color: colors.greenAccent[500] }}
@@ -373,9 +431,10 @@ const AddCategoryModal = ({
                         <DatePicker
                           label="Basic date picker"
                           onChange={(e) => {
-                            const datum = `${e.$y}-${e.$M}-${e.$D}`;
-                            setCategoryData({
-                              ...categoryData,
+                            const datum = `${e.$y}-${e.$M + 1}-${e.$D}`;
+                            console.log(datum);
+                            setProfessorData({
+                              ...professorData,
                               datum: datum,
                             });
                           }}
@@ -394,8 +453,8 @@ const AddCategoryModal = ({
                           label="Basic date picker"
                           onChange={(e) => {
                             const datum = `${e.$y}-${e.$M}-${e.$D}`;
-                            setCategoryData({
-                              ...categoryData,
+                            setProfessorData({
+                              ...professorData,
                               ruecktrittbis: datum,
                             });
                           }}
@@ -416,8 +475,8 @@ const AddCategoryModal = ({
                             const parsedDate = dayjs(e.$d);
                             const start = parsedDate.format("HH:mm");
 
-                            setCategoryData({
-                              ...categoryData,
+                            setProfessorData({
+                              ...professorData,
                               beginn: start,
                             });
                           }}
@@ -438,8 +497,8 @@ const AddCategoryModal = ({
                             const parsedDate = dayjs(e.$d);
                             const ende = parsedDate.format("HH:mm");
 
-                            setCategoryData({
-                              ...categoryData,
+                            setProfessorData({
+                              ...professorData,
                               ende: ende,
                             });
                           }}
@@ -447,56 +506,9 @@ const AddCategoryModal = ({
                       </DemoContainer>
                     </LocalizationProvider>
                   </Box>
-                  {catParentid ? null : (
-                    <Accordion>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography
-                          color={colors.greenAccent[500]}
-                          variant="h5"
-                        >
-                          choose Parent exam
-                        </Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <CheckboxTree
-                          nodes={renderExamsList(examList)}
-                          noCascade
-                          checked={checked}
-                          expanded={expanded}
-                          onClick={(e) => {
-                            setCategoryData({
-                              ...categoryData,
-                              parentId: e.value,
-                            });
-                            if (checked.length < 1) {
-                              checked.push(e.value);
-                            }
-                          }}
-                          onCheck={(checked) => {
-                            if (checked.length > 1) {
-                              alert.error("you can pick only one category");
-                              return;
-                            }
-                            setChecked(checked);
-
-                            setCategoryData({
-                              ...categoryData,
-                              parentId: checked[0],
-                            });
-                          }}
-                          onExpand={(expanded) => setExpanded(expanded)}
-                          icons={{
-                            check: <IoIosCheckbox style={{}} />,
-                            uncheck: <IoIosCheckboxOutline style={{}} />,
-                            halfCheck: <IoIosCheckboxOutline style={{}} />,
-                            expandClose: <IoIosArrowForward style={{}} />,
-                            expandOpen: <IoIosArrowDown />,
-                          }}
-                        />
-                      </AccordionDetails>
-                    </Accordion>
-                  )}
                 </Box>
+
+                <ExamTree exams={examList} />
                 <Box display="flex" justifyContent="space-between" mt="20px">
                   <Button
                     type="reset"
@@ -506,7 +518,14 @@ const AddCategoryModal = ({
                   >
                     CANCEL
                   </Button>
-                  <Button type="submit" color="secondary" variant="contained">
+                  <Button
+                    disabled={
+                      !studiengang[0]?.value || !title || !pruefungensnr
+                    }
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                  >
                     CREATE
                   </Button>
                 </Box>

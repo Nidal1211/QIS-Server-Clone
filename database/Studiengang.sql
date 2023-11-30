@@ -1,7 +1,7 @@
-CREATE TABLE Studiengang (
-    id VARCHAR(100) PRIMARY KEY NOT NULL,
-    title VARCHAR(30) NOT NULL,
-    code VARCHAR(30) UNIQUE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME
-    );
+CREATE TABLE `Studiengang` (
+  `id` varchar(100) NOT NULL,
+  `title` varchar(30) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)

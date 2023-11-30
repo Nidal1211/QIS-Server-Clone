@@ -13,7 +13,7 @@ const login = (req, res) => {
 
     sendToken(user, 200, res);
   } else {
-    res.status(400).json("Wrong Credentials!");
+    res.status(400).json({success:false, message: "Wrong Credentials!"});
   }
 };
 const logout = (req, res) => {

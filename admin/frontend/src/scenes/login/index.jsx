@@ -21,7 +21,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { loading, message, isAuthenticated } = useSelector(
+  const { loading, message, isAuthenticated, error } = useSelector(
     (state) => state.auth
   );
   const [user, setUser] = useState({
@@ -37,7 +37,7 @@ const Login = () => {
     const myForrm = new FormData();
     myForrm.append("username", username);
     myForrm.append("password", password);
-    dispatch(login("admin", "123456"));
+    dispatch(login(myForrm));
     setUser({ username: "", password: "" });
     dispatch({ type: "clearMessage" });
   };
@@ -50,9 +50,12 @@ const Login = () => {
       alert.success(message);
       dispatch({ type: "clearMessage" });
     }
-
+    if (error) {
+      alert.error(error);
+      dispatch({ type: "clearError" });
+    }
     if (isAuthenticated) navigate("/");
-  }, [isAuthenticated, message, navigate, dispatch, alert]);
+  }, [isAuthenticated, message, navigate, dispatch, alert, error]);
 
   return (
     <>
@@ -115,8 +118,9 @@ const Login = () => {
                       sx={{ gridColumn: "span 2" }}
                     />
                   </Box>
-                  <Box display="flex" justifyContent="end" mt="20px">
-                    <Button type="submit" color="secondary" variant="contained">
+                  <Box  display="flex" justifyContent="end" mt="20px">
+                    <Button 
+x                    type="submit" color="secondary" variant="contained">
                       Log in
                     </Button>
                   </Box>

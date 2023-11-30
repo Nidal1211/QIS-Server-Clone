@@ -22,6 +22,7 @@ export const authReducer = createReducer(initialState, {
     state.loading = false;
     state.isAuthenticated = false;
     state.error = action.payload;
+    state.success = false;
   },
 
   logOutRequest: (state) => {
@@ -45,5 +46,7 @@ export const authReducer = createReducer(initialState, {
   },
   clearError: (state) => {
     state.error = null;
+    state.success = null;
+
   },
 });

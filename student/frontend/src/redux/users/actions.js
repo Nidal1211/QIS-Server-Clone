@@ -4,7 +4,7 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({ type: "loginRequest" });
 
     const { data } = await axios.post(
-      `/api/users/login`,
+      `/api/auth/login`,
       { email, password },
       {
         headers: {
@@ -25,7 +25,7 @@ export const logOut = () => async (dispatch) => {
   try {
     dispatch({ type: "logOutRequest" });
 
-    const { data } = await axios.get(`/api/users/logout`, {
+    const { data } = await axios.get(`/api/auth/logout`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -45,7 +45,7 @@ export const getUserDetails = () => async (dispatch) => {
   try {
     dispatch({ type: "getUserDetailsRequest" });
 
-    const { data } = await axios.get(`/api/users/get-user-details`, {
+    const { data } = await axios.get(`/api/student/get-student-details`, {
       headers: {
         "Content-Type": "application/json",
       },

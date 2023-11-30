@@ -4,9 +4,9 @@ import Login from "./login";
 import Topbar from "./global/Topbar";
 import Sidebar from "./global/Sidebar";
 import Dashboard from "./dashboard";
-import Team from "./team";
-import Invoices from "./invoices";
-import Contacts from "./contacts";
+import ExamManagenemt from "./exam-management";
+import Notenspiegel from "./notenspiegel";
+import MyExams from "./my-exams";
 import Bar from "./bar";
 import Form from "./form";
 import Line from "./line";
@@ -28,9 +28,9 @@ export {
   Calendar,
   Sidebar,
   Dashboard,
-  Team,
-  Invoices,
-  Contacts,
+  ExamManagenemt,
+  Notenspiegel,
+  MyExams,
   Bar,
   Form,
   Line,

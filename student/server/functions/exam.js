@@ -1,22 +1,22 @@
-// recursive Function to create a nested category structure
+// recursive Function to create a nested  structure
 
-function createCategories(categories, parentid) {
-  const categoryList = [];
-  let category;
-  if (parentid == null) {
-    category = categories.filter((cat) => cat.parentid == undefined);
+function createExams(exams, parentId) {
+  const examList = [];
+  let exam;
+  if (parentId == null) {
+    exam = exams.filter((ex) => ex.parentId == undefined);
   } else {
-    category = categories.filter((cat) => cat.parentid == parentid);
+    exam = exams.filter((ex) => ex.parentId == parentId);
   }
 
-  for (let cate of category) {
-    categoryList.push({
-      ...cate,
-      children: createCategories(categories, cate.id),
+  for (let ex of exam) {
+    examList.push({
+      ...ex,
+      children: createExams(exams, ex.id),
     });
   }
 
-  return categoryList;
+  return examList;
 }
 
 function findCategoryWithId(categoriesWithProductsList, categoryId) {
@@ -78,4 +78,4 @@ function getImageIdsForCategory(data) {
   return imageIds;
 }
 
-export { createCategories, getImageIdsForCategory, findCategoryWithId };
+export { createExams, getImageIdsForCategory, findCategoryWithId };

@@ -7,3 +7,4 @@ authRouter.route("/login").post(login);
 authRouter.route("/logout").get(logout);
 
 export default authRouter;
+

@@ -26,12 +26,12 @@ import formatDate from "../../hooks/useFormatDate";
 import { deleteExam, getExamById, getExams } from "../../redux/exams/actions";
 import { getProfessorList } from "../../redux/professor/actions";
 import { getStudiengangList } from "../../redux/studiengang/actions";
-
+import dayjs from "dayjs";
 const columnHelper = createColumnHelper();
 
 const Studiengang = () => {
   const alert = useAlert();
-
+  let [examToUpdate, setExamToUpdate] = useState({});
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -87,7 +87,6 @@ const Studiengang = () => {
       cell: ({ row, getValue }) => {
         return (
           <Stack
-            sx={{ paddingLeft: `${row.depth * 2}rem` }}
             direction="row"
             spacing={2}
           >
@@ -131,7 +130,11 @@ const Studiengang = () => {
     columnHelper.accessor("datum", {
       id: "datum",
       header: "datum",
-      cell: ({ row }) => <Stack>{row.original.datum}</Stack>,
+      cell: ({ row }) => {
+        const date = row.original?.datum;
+        const parsedDate = dayjs(date).format("YYYY-MM-DD");
+        return row.original?.datum ? <Stack>{parsedDate}</Stack> : null;
+      },
     }),
     columnHelper.accessor("beginn", {
       id: "beginn",
@@ -146,7 +149,7 @@ const Studiengang = () => {
     columnHelper.accessor("pruefer", {
       id: "pruefer",
       header: "pruefer",
-      cell: ({ row }) => <Stack>{row.original.pruefer}</Stack>,
+      cell: ({ row }) =>  row.original.pruefer?    <Stack>{row.original.pruefer_firstname+" "+row.original.pruefer_lastname }</Stack>:"",
     }),
     columnHelper.accessor("semester", {
       id: "semester",
@@ -158,10 +161,10 @@ const Studiengang = () => {
       header: "pruefungensnr",
       cell: ({ row }) => <Stack>{row.original.pruefungensnr}</Stack>,
     }),
-    columnHelper.accessor("studiengangId", {
-      id: "studiengangId",
-      header: "studiengangId",
-      cell: ({ row }) => <Stack>{row.original.studiengangId}</Stack>,
+    columnHelper.accessor("studiengang", {
+      id: "studiengang",
+      header: "studiengang",
+      cell: ({ row }) => <Stack>{row.original.studiengangstitle}</Stack>,
     }),
     columnHelper.accessor("raum", {
       id: "raum",
@@ -171,7 +174,11 @@ const Studiengang = () => {
     columnHelper.accessor("ruecktrittbis", {
       id: "ruecktrittbis",
       header: "ruecktrittbis",
-      cell: ({ row }) => <Stack>{row.original.ruecktrittbis}</Stack>,
+      cell: ({ row }) => {
+        const date = row.original?.ruecktrittbis || null;
+        const parsedDate = dayjs(date).format("YYYY-MM-DD");
+        return row.original?.ruecktrittbis ? <Stack>{parsedDate}</Stack> : null;
+      },
     }),
     columnHelper.accessor("credit_point", {
       id: "credit_point",
@@ -214,8 +221,7 @@ const Studiengang = () => {
           </Button>
           <Button
             onClick={(e) => {
-              dispatch(getExamById(row.original.id));
-
+              setExamToUpdate(row.original);
               handleOpenUpdate();
             }}
             style={{ backgroundColor: colors.greenAccent[500] }}
@@ -229,7 +235,7 @@ const Studiengang = () => {
             onClick={(e) => {
               if (
                 window.confirm(
-                  `are you sure you want to delete ${row.original.name}`
+                  `are you sure you want to delete ${row.original.title}`
                 )
               ) {
                 dispatch(deleteExam(row.original.id));
@@ -248,11 +254,11 @@ const Studiengang = () => {
     state: {
       expanded,
     },
+    
+        onExpandedChange: setExpanded,
+        getExpandedRowModel: getExpandedRowModel(),
     getSubRows: (row) => row.children,
-
-    onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
   });
   return (
     <div>
@@ -281,8 +287,9 @@ const Studiengang = () => {
         <UpdateModal
           open={openUpdate}
           handleClose={handleCloseUpdate}
-          exam={exam}
-          loading={loading}
+          professorList={professorList}
+          exam={examToUpdate}
+          studiengangList={studiengangList}
           examList={examList}
         />
         <table>

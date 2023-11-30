@@ -2,7 +2,7 @@ import { createConnection } from "mysql";
 const db = createConnection({
   host: "localhost",
   user: "root",
-  password: "bebba",
+  password: "password",
   database: "uni",
 });
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import store from "./redux/store";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { getUserDetails } from "./redux/users/actions";
@@ -13,9 +13,9 @@ import {
   Topbar,
   Sidebar,
   Dashboard,
-  Team,
-  Invoices,
-  Contacts,
+  ExamManagenemt,
+  Notenspiegel,
+  MyExams,
   Bar,
   Form,
   Line,
@@ -27,15 +27,12 @@ import {
   Product,
 } from "./scenes";
 
-import { useAlert } from "react-alert";
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
-  const { isAuthenticated, user, error } = useSelector((state) => state.user);
-  const alert = useAlert();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { isAuthenticated, user} = useSelector((state) => state.user);
+
 
   useEffect(() => {
     store.dispatch(getUserDetails());
@@ -79,18 +76,18 @@ function App() {
                 }
               />
               <Route
-                path="/team"
+                path="/exam-managenemt"
                 element={
                   <ProtectedRoute>
-                    <Team />
+                    <ExamManagenemt />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="/contacts"
+                path="/anmeldeliste"
                 element={
                   <ProtectedRoute>
-                    <Contacts />
+                    <MyExams />
                   </ProtectedRoute>
                 }
               />
@@ -106,7 +103,7 @@ function App() {
                 path="/invoices"
                 element={
                   <ProtectedRoute>
-                    <Invoices />
+                    <Notenspiegel />
                   </ProtectedRoute>
                 }
               />

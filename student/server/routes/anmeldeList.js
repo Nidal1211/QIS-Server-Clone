@@ -1,10 +1,16 @@
 import { Router } from "express";
-import { login, logout } from "../controllers/auth.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
-import { registerForExam } from "../controllers/anmeldeList.js";
+import {
+  cancelExam,
+  getAnmeldeListe,
+  registerForExam,
+} from "../controllers/anmeldeList.js";
 const ameldeListeRouter = Router();
 
-ameldeListeRouter.route("/exam-register").post(verifyToken, registerForExam);
-ameldeListeRouter.route("/logout").get(logout);
+ameldeListeRouter.route("/register").post(verifyToken, registerForExam);
+ameldeListeRouter.route("/cancel/:examId").delete(verifyToken, cancelExam);
+ameldeListeRouter
+  .route("/get-registred-exam")
+  .get(verifyToken, getAnmeldeListe);
 
 export default ameldeListeRouter;

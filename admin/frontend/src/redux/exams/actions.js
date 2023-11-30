@@ -26,6 +26,7 @@ export const getExams = () => async (dispatch) => {
         "Content-Type": "application/json",
       },
     });
+    console.log(data)
     dispatch({ type: "getExamListuccess", payload: data });
   } catch (error) {
     dispatch({
@@ -69,23 +70,19 @@ export const getExamById = (id) => async (dispatch) => {
   }
 };
 
-export const updateCategory = (id, categoryData) => async (dispatch) => {
+export const updateExam = (id, examData) => async (dispatch) => {
   try {
-    dispatch({ type: "updatecategoryRequest" });
+    dispatch({ type: "updateExamRequest" });
 
-    const { data } = await axios.post(
-      `/api/category/update/${id}`,
-      categoryData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    dispatch({ type: "updatecategorySuccess", payload: data });
+    const { data } = await axios.put(`/api/Exam/update/${id}`, examData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    dispatch({ type: "updateExamSuccess", payload: data });
   } catch (error) {
     dispatch({
-      type: "updatecategoryFailure",
+      type: "updateExamFailure",
       payload: error.response.data.message,
     });
   }

@@ -1,14 +1,17 @@
-CREATE TABLE Studenten (
-    id VARCHAR(100) PRIMARY KEY NOT NULL,
-    username VARCHAR(30) NOT NULL,
-    firstname VARCHAR(30) NOT NULL,
-    matrikelnummer VARCHAR(30) UNIQUE NOT NULL,
-    lastname VARCHAR(30) NOT NULL,
-    email VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL,   
-    studiengangId VARCHAR(50) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME
-    FOREIGN KEY (studiengangId) REFERENCES Studiengang(id) ON DELETE SET NULL
-
-    );
+ CREATE TABLE `Studenten` (
+  `id` varchar(100) NOT NULL,
+  `username` varchar(30) NOT NULL,
+  `firstname` varchar(30) NOT NULL,
+  `matrikelnummer` varchar(30) NOT NULL,
+  `lastname` varchar(30) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `studiengangId` varchar(100) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `matrikelnummer` (`matrikelnummer`),
+  UNIQUE KEY `email` (`email`),
+  KEY `studiengangId` (`studiengangId`),
+  CONSTRAINT `studenten_ibfk_1` FOREIGN KEY (`studiengangId`) REFERENCES `Studiengang` (`id`) ON DELETE SET NULL
+)

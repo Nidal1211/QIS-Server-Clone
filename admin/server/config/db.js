@@ -2,14 +2,13 @@ import { createConnection } from "mysql";
 const db = createConnection({
   host: "localhost",
   user: "root",
-  password: "bebba",
+  password: "password",
   database: "uni",
 });
 
 const connectDB = async (req, res) => {
   db.connect((err, data) => {
     if (err) throw err;
-
     console.log("db connected");
   });
 };

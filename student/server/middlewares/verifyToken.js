@@ -8,7 +8,7 @@ const verifyToken = async (req, res, next) => {
     return res.status(401).send({ message: "STUDENT IS NOT AUTHENTICATED" });
   }
   try {
-    const decodedData = verify(access_token, "jwtkey");
+    const decodedData = verify(student_token, "jwtkey");
 
     req.student = decodedData;
 

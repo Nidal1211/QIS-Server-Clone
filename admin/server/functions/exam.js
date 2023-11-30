@@ -2,17 +2,17 @@
 
 function createExams(exams, parentId) {
   const examList = [];
-  let exam;
+  let myExams;
   if (parentId == null) {
-    exam = exams.filter((ex) => ex.parentId == undefined);
+    myExams = exams.filter((ex) => ex.parentId == undefined);
   } else {
-    exam = exams.filter((ex) => ex.parentId == parentId);
+    myExams = exams.filter((ex) => ex.parentId == parentId);
   }
 
-  for (let ex of exam) {
+  for (let exam of myExams) {
     examList.push({
-      ...ex,
-      children: createExams(exams, ex.id),
+      ...exam,
+      children: createExams(exams, exam.id),
     });
   }
 

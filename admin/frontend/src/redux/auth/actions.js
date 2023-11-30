@@ -1,11 +1,11 @@
 import axios from "axios";
-export const login = (username, password) => async (dispatch) => {
+export const login = (loginData) => async (dispatch) => {
   try {
     dispatch({ type: "loginRequest" });
 
     const { data } = await axios.post(
       `/api/login`,
-      { username, password },
+      loginData,
       {
         headers: {
           "Content-Type": "application/json",
@@ -16,8 +16,7 @@ export const login = (username, password) => async (dispatch) => {
     localStorage.setItem("isAuth", true);
   } catch (error) {
     localStorage.setItem("isAuth", false);
-
-    dispatch({ type: "loginFailure", payload: error.response.data.message });
+    dispatch({ type: "loginFailure", payload: error?.response?.data?.message });
   }
 };
 

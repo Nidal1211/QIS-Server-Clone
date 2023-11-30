@@ -3,12 +3,15 @@ import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
 import cookieParser from "cookie-parser";
 import errorMiddleware from "./middlewares/error.js";
-import { v2 as cloudinary } from "cloudinary";
 import fileUpload from "express-fileupload";
 import { promisify } from "util";
 import { readFile as _readFile } from "fs";
 import cors from "cors";
 import authRouter from "./routes/auth.js";
+import studentRouter from "./routes/student.js";
+import examRouter from "./routes/exam.js";
+import ameldeListeRouter from "./routes/anmeldeList.js";
+import notenspiegelRouter from "./routes/notenspiegel.js";
 
 const app = express();
 dotenv.config({ path: "./config/config.env" });
@@ -18,15 +21,14 @@ app.use(json());
 app.use(cookieParser());
 app.use(fileUpload());
 
-cloudinary.config({
-  cloud_name: "dkyyqvbna",
-  api_key: "368228333932484",
-  api_secret: "EaIv9OI8kTcHYA-ksztikEw7J54",
-});
-
 connectDB();
 // Handling Uncaught Exception
-app.use("/api", authRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/student", studentRouter);
+app.use("/api/exam", examRouter);
+app.use("/api/anmeldeliste", ameldeListeRouter);
+app.use("/api/notenspiegel", notenspiegelRouter);
+
 // server routes
 
 app.use(errorMiddleware);
